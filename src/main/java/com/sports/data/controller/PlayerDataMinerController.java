@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpClient;
 import java.util.List;
 
 @RestController
@@ -19,20 +18,18 @@ public class PlayerDataMinerController {
 
     private final PlayerDataMinerService playerDataMinerService;
 
-
     @Autowired
-    public PlayerDataMinerController(final PlayerDataMinerService playerDataMinerService,
-                                     final HttpClient httpClient) {
+    public PlayerDataMinerController(final PlayerDataMinerService playerDataMinerService) {
         this.playerDataMinerService = playerDataMinerService;
     }
 
-    @RequestMapping(value = "/ranking", produces = {"application/json"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/data-miner/ranking", produces = {"application/json"}, method = RequestMethod.GET)
     public ResponseEntity<List<Ranking>> getPlayers() {
         return new ResponseEntity<>(playerDataMinerService.getRankings(), HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/ranking/{teamId}", produces = {"application/json"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/data-miner/ranking/{teamId}", produces = {"application/json"}, method = RequestMethod.GET)
     public ResponseEntity<Team> getPlayerInfo(@PathVariable("teamId") Integer teamId) {
         return new ResponseEntity<>(playerDataMinerService.getTeamDetail(teamId), HttpStatus.OK);
     }

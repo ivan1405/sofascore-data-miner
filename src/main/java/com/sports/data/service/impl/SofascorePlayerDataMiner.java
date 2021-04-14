@@ -1,6 +1,8 @@
 package com.sports.data.service.impl;
 
 import com.google.gson.Gson;
+import com.sports.data.crud.entity.Player;
+import com.sports.data.crud.repository.PlayerRepository;
 import com.sports.data.model.Ranking;
 import com.sports.data.model.RankingList;
 import com.sports.data.model.Team;
@@ -22,11 +24,14 @@ import java.util.List;
 public class SofascorePlayerDataMiner implements PlayerDataMinerService {
 
     private final HttpClient httpClient;
+    private final PlayerRepository playerRepository;
+
     private final Gson gson = new Gson();
 
     @Autowired
-    public SofascorePlayerDataMiner(final HttpClient httpClient) {
+    public SofascorePlayerDataMiner(final HttpClient httpClient, final PlayerRepository playerRepository) {
         this.httpClient = httpClient;
+        this.playerRepository = playerRepository;
     }
 
 
@@ -62,7 +67,14 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             TeamWrapper teamWrapper = gson.fromJson(response.body(), TeamWrapper.class);
-            System.out.println(teamWrapper.getTeam().getName());
+
+            // TODO Modificar
+            Player player = new Player();
+            player.setId(teamWrapper.getTeam().getPlayerTeamInfo().getId());
+            player.setName(teamWrapper.getTeam().getName());
+
+            playerRepository.save(player);
+
             log.info("OK - Delivering data");
             return teamWrapper.getTeam();
         } catch (IOException | InterruptedException e) {
