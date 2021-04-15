@@ -11,4 +11,6 @@ public interface PlayerDataMinerService {
 
     Team getTeamDetail(Integer teamId);
 
+    void minePlayersData();
+
 }

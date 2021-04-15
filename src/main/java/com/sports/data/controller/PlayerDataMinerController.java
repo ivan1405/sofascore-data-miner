@@ -26,11 +26,15 @@ public class PlayerDataMinerController {
     @RequestMapping(value = "/data-miner/ranking", produces = {"application/json"}, method = RequestMethod.GET)
     public ResponseEntity<List<Ranking>> getPlayers() {
         return new ResponseEntity<>(playerDataMinerService.getRankings(), HttpStatus.OK);
-
     }
 
     @RequestMapping(value = "/data-miner/ranking/{teamId}", produces = {"application/json"}, method = RequestMethod.GET)
     public ResponseEntity<Team> getPlayerInfo(@PathVariable("teamId") Integer teamId) {
         return new ResponseEntity<>(playerDataMinerService.getTeamDetail(teamId), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/data-miner/start", produces = {"application/json"}, method = RequestMethod.GET)
+    public void startDataMining() {
+        playerDataMinerService.minePlayersData();
     }
 }
