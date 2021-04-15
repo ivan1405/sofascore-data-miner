@@ -8,6 +8,7 @@ import com.sports.data.model.RankingList;
 import com.sports.data.model.Team;
 import com.sports.data.model.TeamWrapper;
 import com.sports.data.service.PlayerDataMinerService;
+import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+
+import static com.sports.data.shared.Constants.buildSofascoreEndpoint;
 
 @Service
 @Slf4j
@@ -34,16 +37,14 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         this.playerRepository = playerRepository;
     }
 
-
     @Override
     public List<Ranking> getRankings() {
         log.info("Getting full list of ranking");
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create("https://api.sofascore.com/api/v1/rankings/type/5"))
-                .setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
+                .uri(URI.create(buildSofascoreEndpoint(Constants.SOFASCORE_API_RANKINGS_TENNIS)))
+                .setHeader("User-Agent", Constants.SOFASCORE_USER_AGENT)
                 .build();
-
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             RankingList rankings = gson.fromJson(response.body(), RankingList.class);
@@ -60,10 +61,9 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         log.info("Getting team detail");
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create("https://api.sofascore.com/api/v1/team/" + teamId))
-                .setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
+                .uri(URI.create(buildSofascoreEndpoint(Constants.SOFASCORE_API_GET_TEAM) + "/" + teamId))
+                .setHeader("User-Agent", Constants.SOFASCORE_USER_AGENT)
                 .build();
-
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             TeamWrapper teamWrapper = gson.fromJson(response.body(), TeamWrapper.class);
