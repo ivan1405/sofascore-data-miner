@@ -1,4 +1,4 @@
-package com.sports.data.model;
+package com.sports.data.model.sofascore;
 
 import lombok.Data;
 

@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.sports.data.crud.entity.Player;
 import com.sports.data.crud.repository.PlayerRepository;
 import com.sports.data.mapper.PlayerMapper;
-import com.sports.data.model.*;
+import com.sports.data.model.sofascore.*;
 import com.sports.data.service.PlayerDataMinerService;
 import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.sports.data.shared.Constants.buildSofascoreEndpoint;
@@ -60,7 +63,6 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
 
     @Override
     public Team getTeamDetail(Integer teamId) {
-        log.info("Getting team detail");
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(buildSofascoreEndpoint(Constants.SOFASCORE_API_GET_TEAM) + "/" + teamId))
@@ -69,7 +71,6 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             TeamWrapper teamWrapper = gson.fromJson(response.body(), TeamWrapper.class);
-            log.info("OK - Delivering data");
             return teamWrapper.getTeam();
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage());
@@ -80,6 +81,8 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
     @Override
     public void minePlayersData() {
         log.info("Starting with the data mining...");
+        StopWatch watch = new StopWatch();
+        watch.start();
         List<Ranking> rankings = this.getRankings();
         AtomicInteger playersSaved = new AtomicInteger();
         rankings.forEach(ranking -> {
@@ -89,7 +92,21 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
             playerRepository.save(player);
             playersSaved.getAndIncrement();
         });
-        log.info("{} players have been saved!", playersSaved);
+        watch.stop();
+        log.info("{} players have been exported in {} seconds!", playersSaved, watch.getTime(TimeUnit.SECONDS));
+    }
+
+    @Override
+    public List<com.sports.data.model.Player> findAllPlayers() {
+        Iterable<Player> playersEntity = playerRepository.findAll();
+        List<com.sports.data.model.Player> players = playerMapper.mapAsList(playersEntity, com.sports.data.model.Player.class);
+        players.sort(Comparator.comparing(com.sports.data.model.Player::getRanking));
+        return players;
+    }
+
+    @Override
+    public com.sports.data.model.Player findPlayerById(Integer id) {
+        return null;
     }
 
 }

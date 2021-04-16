@@ -1,9 +1,9 @@
 package com.sports.data.mapper;
 
 import com.sports.data.crud.entity.Player;
-import com.sports.data.model.PlayerTeamInfoWrapper;
-import com.sports.data.model.Ranking;
-import com.sports.data.model.Team;
+import com.sports.data.model.sofascore.PlayerTeamInfoWrapper;
+import com.sports.data.model.sofascore.Ranking;
+import com.sports.data.model.sofascore.Team;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.OrikaSystemProperties;
 import ma.glasnost.orika.impl.ConfigurableMapper;
@@ -46,6 +46,10 @@ public class PlayerMapper extends ConfigurableMapper {
 
         mapperFactory.classMap(Ranking.class, Player.class)
                 .exclude("id")
+                .byDefault()
+                .register();
+
+        mapperFactory.classMap(Player.class, com.sports.data.model.Player.class)
                 .byDefault()
                 .register();
     }
