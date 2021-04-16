@@ -106,7 +106,8 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
 
     @Override
     public com.sports.data.model.Player findPlayerById(Integer id) {
-        return null;
+        Player playerEntity = playerRepository.findPlayerById(id);
+        return playerMapper.map(playerEntity, com.sports.data.model.Player.class);
     }
 
 }

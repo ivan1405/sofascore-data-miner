@@ -43,4 +43,9 @@ public class PlayerDataMinerController {
     public ResponseEntity<List<Player>> getPlayers() {
         return new ResponseEntity<>(playerDataMinerService.findAllPlayers(), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/data-miner/players/{playerId}", produces = {"application/json"}, method = RequestMethod.GET)
+    public ResponseEntity<Player> getPlayers(@PathVariable("playerId") Integer playerId) {
+        return new ResponseEntity<>(playerDataMinerService.findPlayerById(playerId), HttpStatus.OK);
+    }
 }

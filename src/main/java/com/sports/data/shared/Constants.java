@@ -3,7 +3,7 @@ package com.sports.data.shared;
 public class Constants {
 
     // Sofascore endpoints
-    public final static String SOFASCORE_API_BASEPATH = "https://api.sofascore.com/api/v1";
+    private final static String SOFASCORE_API_BASEPATH = "https://api.sofascore.com/api/v1";
     public final static String SOFASCORE_API_RANKINGS_TENNIS = "/rankings/type/5";
     public final static String SOFASCORE_API_GET_TEAM = "/team";
 
