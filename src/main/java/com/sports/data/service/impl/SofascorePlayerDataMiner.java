@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.sports.data.crud.entity.Player;
 import com.sports.data.crud.repository.PlayerRepository;
 import com.sports.data.mapper.PlayerMapper;
-import com.sports.data.model.Ranking;
-import com.sports.data.model.RankingList;
-import com.sports.data.model.Team;
-import com.sports.data.model.TeamWrapper;
+import com.sports.data.model.*;
 import com.sports.data.service.PlayerDataMinerService;
 import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +84,8 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         AtomicInteger playersSaved = new AtomicInteger();
         rankings.forEach(ranking -> {
             Team team = getTeamDetail(ranking.getTeam().getId());
-            Player player = playerMapper.map(team, Player.class);
+            PlayerTeamInfoWrapper playerTeamInfoWrapper = new PlayerTeamInfoWrapper(ranking, team);
+            Player player = playerMapper.map(playerTeamInfoWrapper, Player.class);
             playerRepository.save(player);
             playersSaved.getAndIncrement();
         });

@@ -1,6 +1,7 @@
 package com.sports.data.mapper;
 
 import com.sports.data.crud.entity.Player;
+import com.sports.data.model.PlayerTeamInfoWrapper;
 import com.sports.data.model.Ranking;
 import com.sports.data.model.Team;
 import ma.glasnost.orika.MapperFactory;
@@ -15,7 +16,6 @@ public class PlayerMapper extends ConfigurableMapper {
     @Override
     protected void configureFactoryBuilder(DefaultMapperFactory.Builder factoryBuilder) {
         super.configureFactoryBuilder(factoryBuilder);
-
         System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
         System.setProperty(OrikaSystemProperties.WRITE_CLASS_FILES, "true");
     }
@@ -23,6 +23,11 @@ public class PlayerMapper extends ConfigurableMapper {
     @Override
     protected void configure(MapperFactory mapperFactory) {
         super.configure(mapperFactory);
+
+        mapperFactory.classMap(PlayerTeamInfoWrapper.class, Player.class)
+                .field("teamInfo", "")
+                .field("rankingInfo", "")
+                .register();
 
         mapperFactory.classMap(Team.class, Player.class)
                 .field("sport.name", "sport")
@@ -40,6 +45,7 @@ public class PlayerMapper extends ConfigurableMapper {
                 .register();
 
         mapperFactory.classMap(Ranking.class, Player.class)
+                .exclude("id")
                 .byDefault()
                 .register();
     }
