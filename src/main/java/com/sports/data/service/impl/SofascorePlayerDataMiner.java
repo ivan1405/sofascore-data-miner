@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sports.data.crud.entity.Player;
 import com.sports.data.crud.repository.PlayerRepository;
 import com.sports.data.mapper.PlayerMapper;
-import com.sports.data.model.sofascore.*;
+import com.sports.data.model.sofascore.team.*;
 import com.sports.data.service.PlayerDataMinerService;
 import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;

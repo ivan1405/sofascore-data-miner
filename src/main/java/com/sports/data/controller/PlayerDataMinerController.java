@@ -1,8 +1,8 @@
 package com.sports.data.controller;
 
 import com.sports.data.model.Player;
-import com.sports.data.model.sofascore.Ranking;
-import com.sports.data.model.sofascore.Team;
+import com.sports.data.model.sofascore.team.Ranking;
+import com.sports.data.model.sofascore.team.Team;
 import com.sports.data.service.PlayerDataMinerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

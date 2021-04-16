@@ -1,24 +1,14 @@
 package com.sports.data.mapper;
 
 import com.sports.data.crud.entity.Player;
-import com.sports.data.model.sofascore.PlayerTeamInfoWrapper;
-import com.sports.data.model.sofascore.Ranking;
-import com.sports.data.model.sofascore.Team;
+import com.sports.data.model.sofascore.team.PlayerTeamInfoWrapper;
+import com.sports.data.model.sofascore.team.Ranking;
+import com.sports.data.model.sofascore.team.Team;
 import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.OrikaSystemProperties;
-import ma.glasnost.orika.impl.ConfigurableMapper;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlayerMapper extends ConfigurableMapper {
-
-    @Override
-    protected void configureFactoryBuilder(DefaultMapperFactory.Builder factoryBuilder) {
-        super.configureFactoryBuilder(factoryBuilder);
-        System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
-        System.setProperty(OrikaSystemProperties.WRITE_CLASS_FILES, "true");
-    }
+public class PlayerMapper extends SportMapper {
 
     @Override
     protected void configure(MapperFactory mapperFactory) {

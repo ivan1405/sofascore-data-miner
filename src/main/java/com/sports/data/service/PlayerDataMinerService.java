@@ -1,8 +1,8 @@
 package com.sports.data.service;
 
 import com.sports.data.model.Player;
-import com.sports.data.model.sofascore.Ranking;
-import com.sports.data.model.sofascore.Team;
+import com.sports.data.model.sofascore.team.Ranking;
+import com.sports.data.model.sofascore.team.Team;
 
 import java.util.List;
 
