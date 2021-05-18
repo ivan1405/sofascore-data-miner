@@ -85,6 +85,7 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         watch.start();
         List<Ranking> rankings = this.getRankings();
         AtomicInteger playersSaved = new AtomicInteger();
+        log.info("Storing data in database");
         rankings.forEach(ranking -> {
             Team team = getTeamDetail(ranking.getTeam().getId());
             PlayerTeamInfoWrapper playerTeamInfoWrapper = new PlayerTeamInfoWrapper(ranking, team);
