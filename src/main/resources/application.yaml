@@ -6,16 +6,28 @@ spring:
       on-profile: default
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: false
-  h2:
-    console:
-      enabled: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433/tfm-data
+    username: ivan_klp@tfm-bbdd
+    password: Tfm_1234
+    driver-class-name: com.mysql.jdbc.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: false
+#  h2:
+#    console:
+#      enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
     #data: classpath:testdata.sql
 
 server:
