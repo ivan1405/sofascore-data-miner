@@ -20,3 +20,22 @@ spring:
 
 server:
   port: 8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433/tfm-data
+    username: ivan_klp@tfm-bbdd
+    password: Tfm_1234
+    driver-class-name: com.mysql.jdbc.Driver
+

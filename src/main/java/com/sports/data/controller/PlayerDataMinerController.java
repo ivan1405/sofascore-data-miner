@@ -34,7 +34,7 @@ public class PlayerDataMinerController {
         return new ResponseEntity<>(playerDataMinerService.getTeamDetail(teamId), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/data-miner/start", produces = {"application/json"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/data-miner/players/start", produces = {"application/json"}, method = RequestMethod.GET)
     public void startDataMining() {
         playerDataMinerService.minePlayersData();
     }
