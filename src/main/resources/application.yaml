@@ -15,7 +15,7 @@ spring:
     url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433/tfm-data
     username: ivan_klp@tfm-bbdd
     password: Tfm_1234
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #  jpa:
 #    hibernate:
 #      ddl-auto: create-drop
