@@ -5,8 +5,8 @@ spring:
     activate:
       on-profile: default
   jpa:
-    hibernate:
-      ddl-auto: create-drop
+#    hibernate:
+#      ddl-auto: create-drop
     show-sql: false
     properties:
       hibernate:
