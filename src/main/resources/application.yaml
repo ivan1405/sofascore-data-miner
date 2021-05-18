@@ -10,7 +10,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
   datasource:
     url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433;databaseName=tfm-data
     username: ivan_klp@tfm-bbdd
