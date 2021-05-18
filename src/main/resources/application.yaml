@@ -12,7 +12,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   datasource:
-    url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433/tfm-data
+    url: jdbc:sqlserver://tfm-bbdd.database.windows.net:1433;databaseName=tfm-data
     username: ivan_klp@tfm-bbdd
     password: Tfm_1234
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
