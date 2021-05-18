@@ -28,7 +28,7 @@ spring:
       on-profile: production
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
