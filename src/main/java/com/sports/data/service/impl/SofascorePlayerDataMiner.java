@@ -17,7 +17,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -101,7 +100,7 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
     public List<com.sports.data.model.Player> findAllPlayers() {
         Iterable<Player> playersEntity = playerRepository.findAll();
         List<com.sports.data.model.Player> players = playerMapper.mapAsList(playersEntity, com.sports.data.model.Player.class);
-        players.sort(Comparator.comparing(com.sports.data.model.Player::getRanking));
+        //players.sort(Comparator.comparing(com.sports.data.model.Player::getRanking));
         return players;
     }
 
