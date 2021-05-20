@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Event {
 
-    private Integer id;
+    //private Integer id;
     private String slug;
     private Integer firstToServe;
     private Status status;

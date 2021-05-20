@@ -80,7 +80,7 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
 
     @Override
     public void minePlayersData() {
-        log.info("Starting with the data mining...");
+        log.info("Starting with the players data mining...");
         StopWatch watch = new StopWatch();
         watch.start();
         List<Ranking> rankings = this.getRankings();
