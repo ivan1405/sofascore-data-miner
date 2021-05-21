@@ -10,5 +10,7 @@ public interface EventDataMinerService {
 
     void mineEventsData(int daysOffset);
 
+    void mineEventsOfTheDay();
+
     List<Event> getEventsData(int daysOffset);
 }

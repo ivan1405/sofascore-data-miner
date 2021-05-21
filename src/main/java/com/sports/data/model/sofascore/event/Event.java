@@ -6,11 +6,13 @@ import lombok.Data;
 @Data
 public class Event {
 
-    //private Integer id;
+    private Integer id;
     private String slug;
-    private Integer firstToServe;
+    private String firstToServe;
     private Status status;
     private Integer winnerCode;
+    private String winner;
+    private String date;
     private Team homeTeam;
     private Team awayTeam;
     private Score homeScore;

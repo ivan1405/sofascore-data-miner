@@ -10,6 +10,7 @@ import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,6 +40,26 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         this.httpClient = httpClient;
         this.playerRepository = playerRepository;
         this.playerMapper = playerMapper;
+    }
+
+    @Scheduled(cron="0 1 * * * *")
+    @Override
+    public void minePlayersData() {
+        log.info("Starting with the players data mining...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+        List<Ranking> rankings = this.getRankings();
+        AtomicInteger playersSaved = new AtomicInteger();
+        log.info("Storing data in database");
+        rankings.forEach(ranking -> {
+            Team team = getTeamDetail(ranking.getTeam().getId());
+            PlayerTeamInfoWrapper playerTeamInfoWrapper = new PlayerTeamInfoWrapper(ranking, team);
+            Player player = playerMapper.map(playerTeamInfoWrapper, Player.class);
+            playerRepository.save(player);
+            playersSaved.getAndIncrement();
+        });
+        watch.stop();
+        log.info("{} players have been exported in {} seconds!", playersSaved, watch.getTime(TimeUnit.SECONDS));
     }
 
     @Override
@@ -75,25 +96,6 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
             log.error(e.getMessage());
         }
         return null;
-    }
-
-    @Override
-    public void minePlayersData() {
-        log.info("Starting with the players data mining...");
-        StopWatch watch = new StopWatch();
-        watch.start();
-        List<Ranking> rankings = this.getRankings();
-        AtomicInteger playersSaved = new AtomicInteger();
-        log.info("Storing data in database");
-        rankings.forEach(ranking -> {
-            Team team = getTeamDetail(ranking.getTeam().getId());
-            PlayerTeamInfoWrapper playerTeamInfoWrapper = new PlayerTeamInfoWrapper(ranking, team);
-            Player player = playerMapper.map(playerTeamInfoWrapper, Player.class);
-            playerRepository.save(player);
-            playersSaved.getAndIncrement();
-        });
-        watch.stop();
-        log.info("{} players have been exported in {} seconds!", playersSaved, watch.getTime(TimeUnit.SECONDS));
     }
 
     @Override

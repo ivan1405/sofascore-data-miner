@@ -16,6 +16,7 @@ public class EventMapper extends SportMapper {
         super.configure(mapperFactory);
 
         mapperFactory.classMap(Event.class, com.sports.data.crud.entity.Event.class)
+                .field("id", "eventId")
                 .field("slug", "matchTitle")
                 .field("homeTeam", "homePlayer")
                 .field("awayTeam", "awayPlayer")
@@ -57,6 +58,7 @@ public class EventMapper extends SportMapper {
                                 event.getHomeTeam().getSlug() : event.getAwayTeam().getSlug());
                         // set the number of sets
                         eventEntity.setTotalSets(event.getHomeScore().getCurrent() + event.getAwayScore().getCurrent());
+                        eventEntity.setFirstToServe("1".equals(event.getFirstToServe()) ? event.getHomeTeam().getSlug() : event.getAwayTeam().getSlug());
                     }
                 })
                 .byDefault()

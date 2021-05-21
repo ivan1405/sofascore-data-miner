@@ -14,6 +14,9 @@ public class Event {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "event_id")
+    private String eventId;
+
     @Column(name = "event_title")
     private String matchTitle;
 

@@ -12,6 +12,7 @@ import com.sports.data.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -71,16 +72,48 @@ public class SofascoreEventDataMiner implements EventDataMinerService {
         StopWatch watch = new StopWatch();
         watch.start();
         LocalDate date = LocalDate.now();
-        AtomicInteger eventsSaved = new AtomicInteger();
-
         while (daysOffset > 0) {
-            List<Event> events = getEventsByDay(date.toString());
-            LocalDate finalDate = date;
-            events.forEach(event -> {
-                if ("Ended".equals(event.getStatus().getDescription())) {
+            saveEventsByDate(date);
+            date = date.minusDays(1);
+            daysOffset--;
+        }
+        watch.stop();
+        log.info("Events have been exported in {} seconds!", watch.getTime(TimeUnit.SECONDS));
+    }
+
+    @Scheduled(cron = "30 1 * * * *")
+    @Override
+    public void mineEventsOfTheDay() {
+        log.info("Starting with the events data mining of the day...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+        saveEventsByDate(LocalDate.now());
+        watch.stop();
+        log.info("Scheduled events have been exported in {} seconds!", watch.getTime(TimeUnit.SECONDS));
+    }
+
+    @Override
+    public List<Event> getEventsData(int daysOffset) {
+        log.info("Getting events data...");
+        Iterable<com.sports.data.crud.entity.Event> eventsEntity = eventRepository.findAll();
+        return eventMapper.mapAsList(eventsEntity, Event.class);
+    }
+
+    /**
+     * This method searches all the events by date and store them into the DB
+     *
+     * @param date the date to search the events for
+     */
+    private void saveEventsByDate(LocalDate date) {
+        List<Event> events = getEventsByDay(date.toString());
+        AtomicInteger eventsSaved = new AtomicInteger();
+        events.forEach(event -> {
+            if ("Ended".equals(event.getStatus().getDescription())) {
+                com.sports.data.crud.entity.Event eventById = eventRepository.findByEventId(String.valueOf(event.getId()));
+                // Check if the event has been already stored in the DB
+                if (eventById == null) {
                     com.sports.data.crud.entity.Event eventEntity =
                             eventMapper.map(event, com.sports.data.crud.entity.Event.class);
-
                     Player homePlayer = playerRepository.findPlayerById(event.getHomeTeam().getId());
                     Player awayPlayer = playerRepository.findPlayerById(event.getAwayTeam().getId());
 
@@ -90,23 +123,16 @@ public class SofascoreEventDataMiner implements EventDataMinerService {
                     if (awayPlayer != null) {
                         eventEntity.setAwayPlayer(awayPlayer);
                     }
-
-                    eventEntity.setDate(finalDate.toString());
+                    eventEntity.setDate(date.toString());
                     eventRepository.save(eventEntity);
                     eventsSaved.getAndIncrement();
+                } else {
+                    log.info("Event {} for date {} has been already mined", event.getSlug(), date.toString());
                 }
-            });
-            date = date.minusDays(1);
-            daysOffset--;
-        }
-        watch.stop();
-        log.info("{} events have been exported in {} seconds!", eventsSaved, watch.getTime(TimeUnit.SECONDS));
-    }
-
-    @Override
-    public List<Event> getEventsData(int daysOffset) {
-        log.info("Getting events data...");
-        Iterable<com.sports.data.crud.entity.Event> eventsEntity = eventRepository.findAll();
-        return eventMapper.mapAsList(eventsEntity, Event.class);
+            } else {
+                log.info("Event {} has not ended yet", event.getSlug());
+            }
+        });
+        log.info("{} events have been imported!", eventsSaved);
     }
 }
