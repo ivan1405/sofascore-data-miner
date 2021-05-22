@@ -2,8 +2,8 @@ package com.sports.data.mapper;
 
 import com.sports.data.crud.entity.Player;
 import com.sports.data.model.sofascore.team.PlayerTeamInfoWrapper;
-import com.sports.data.model.sofascore.team.Ranking;
 import com.sports.data.model.sofascore.team.Team;
+import com.sports.data.model.sofascore.team.TeamFullInfo;
 import ma.glasnost.orika.MapperFactory;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,14 @@ public class PlayerMapper extends SportMapper {
     protected void configure(MapperFactory mapperFactory) {
         super.configure(mapperFactory);
 
+        mapperFactory.classMap(TeamFullInfo.class, Player.class)
+                .field("ranking", "")
+                .field("team", "")
+                .register();
+
         mapperFactory.classMap(PlayerTeamInfoWrapper.class, Player.class)
                 .field("teamInfo", "")
-                .field("rankingInfo", "")
+                //.field("rankingInfo", "")
                 .register();
 
         mapperFactory.classMap(Team.class, Player.class)
@@ -34,10 +39,10 @@ public class PlayerMapper extends SportMapper {
                 .byDefault()
                 .register();
 
-        mapperFactory.classMap(Ranking.class, Player.class)
-                .exclude("id")
-                .byDefault()
-                .register();
+//        mapperFactory.classMap(TeamFullInfo.class, Player.class)
+//                .exclude("id")
+//                .byDefault()
+//                .register();
 
         mapperFactory.classMap(Player.class, com.sports.data.model.Player.class)
                 .byDefault()

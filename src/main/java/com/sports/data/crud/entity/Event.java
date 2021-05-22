@@ -15,7 +15,7 @@ public class Event {
     private Integer id;
 
     @Column(name = "event_id")
-    private String eventId;
+    private Integer eventId;
 
     @Column(name = "event_title")
     private String matchTitle;

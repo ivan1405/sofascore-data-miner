@@ -6,4 +6,5 @@ import lombok.Data;
 public class TeamWrapper {
 
     private Team team;
+
 }

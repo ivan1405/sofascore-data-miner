@@ -19,11 +19,6 @@ public class EventsDataMinerController {
         this.eventDataMinerService = eventDataMinerService;
     }
 
-    @RequestMapping(value = "/data-miner/events/{date}", produces = {"application/json"}, method = RequestMethod.GET)
-    public ResponseEntity<List<Event>> getEvents(@PathVariable("date") String date) {
-        return new ResponseEntity<>(eventDataMinerService.getEventsByDay(date), HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/data-miner/events/start", produces = {"application/json"}, method = RequestMethod.GET)
     public void mineEventsData(@RequestParam(required = false, defaultValue = "30") Integer daysOffset) {
         eventDataMinerService.mineEventsData(daysOffset);
@@ -32,5 +27,10 @@ public class EventsDataMinerController {
     @RequestMapping(value = "/data-miner/events", produces = {"application/json"}, method = RequestMethod.GET)
     public ResponseEntity<List<Event>> getEventsData(@RequestParam(required = false, defaultValue = "30") Integer daysOffset) {
         return new ResponseEntity<>(eventDataMinerService.getEventsData(daysOffset), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/data-miner/events/{eventId}", produces = {"application/json"}, method = RequestMethod.GET)
+    public ResponseEntity<Event> getEventData(@PathVariable("eventId") Integer eventId) {
+        return new ResponseEntity<>(eventDataMinerService.getEventData(eventId), HttpStatus.OK);
     }
 }

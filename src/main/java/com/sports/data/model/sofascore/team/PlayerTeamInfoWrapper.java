@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class PlayerTeamInfoWrapper {
 
-    private Ranking rankingInfo;
+    private TeamFullInfo teamFullInfoInfo;
     private Team teamInfo;
 
-    public PlayerTeamInfoWrapper(Ranking rankingInfo, Team teamInfo) {
-        this.rankingInfo = rankingInfo;
+    public PlayerTeamInfoWrapper(TeamFullInfo teamFullInfoInfo, Team teamInfo) {
+        this.teamFullInfoInfo = teamFullInfoInfo;
         this.teamInfo = teamInfo;
     }
 }

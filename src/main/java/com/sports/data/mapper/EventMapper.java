@@ -20,6 +20,8 @@ public class EventMapper extends SportMapper {
                 .field("slug", "matchTitle")
                 .field("homeTeam", "homePlayer")
                 .field("awayTeam", "awayPlayer")
+                .field("homePlayer", "homePlayer")
+                .field("awayPlayer", "awayPlayer")
                 .field("homeScore.current", "homeSetsScore")
                 .field("awayScore.current", "awaySetsScore")
                 .field("homeScore.current", "homeCurrent")

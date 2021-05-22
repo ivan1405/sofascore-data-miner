@@ -6,11 +6,9 @@ import java.util.List;
 
 public interface EventDataMinerService {
 
-    List<Event> getEventsByDay(String date);
-
     void mineEventsData(int daysOffset);
 
-    void mineEventsOfTheDay();
-
     List<Event> getEventsData(int daysOffset);
+
+    Event getEventData(int eventId);
 }

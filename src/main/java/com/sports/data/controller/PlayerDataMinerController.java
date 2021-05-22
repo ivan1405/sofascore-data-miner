@@ -1,8 +1,6 @@
 package com.sports.data.controller;
 
 import com.sports.data.model.Player;
-import com.sports.data.model.sofascore.team.Ranking;
-import com.sports.data.model.sofascore.team.Team;
 import com.sports.data.service.PlayerDataMinerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,21 +20,6 @@ public class PlayerDataMinerController {
     @Autowired
     public PlayerDataMinerController(final PlayerDataMinerService playerDataMinerService) {
         this.playerDataMinerService = playerDataMinerService;
-    }
-
-    @RequestMapping(value = "/data-miner/ranking", produces = {"application/json"}, method = RequestMethod.GET)
-    public ResponseEntity<List<Ranking>> getRankings() {
-        return new ResponseEntity<>(playerDataMinerService.getRankings(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/data-miner/ranking/{teamId}", produces = {"application/json"}, method = RequestMethod.GET)
-    public ResponseEntity<Team> getPlayerInfo(@PathVariable("teamId") Integer teamId) {
-        return new ResponseEntity<>(playerDataMinerService.getTeamDetail(teamId), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/data-miner/players/start", produces = {"application/json"}, method = RequestMethod.GET)
-    public void startDataMining() {
-        playerDataMinerService.minePlayersData();
     }
 
     @RequestMapping(value = "/data-miner/players", produces = {"application/json"}, method = RequestMethod.GET)
