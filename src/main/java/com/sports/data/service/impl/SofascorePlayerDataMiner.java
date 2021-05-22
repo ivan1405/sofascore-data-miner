@@ -42,7 +42,7 @@ public class SofascorePlayerDataMiner implements PlayerDataMinerService {
         this.playerMapper = playerMapper;
     }
 
-    @Scheduled(cron="0 1 * * * *")
+    @Scheduled(cron="0 0 1 * * *")
     @Override
     public void minePlayersData() {
         log.info("Starting with the players data mining...");

@@ -81,7 +81,7 @@ public class SofascoreEventDataMiner implements EventDataMinerService {
         log.info("Events have been exported in {} seconds!", watch.getTime(TimeUnit.SECONDS));
     }
 
-    @Scheduled(cron = "30 1 * * * *")
+    @Scheduled(cron = "0 50 1 * * *")
     @Override
     public void mineEventsOfTheDay() {
         log.info("Starting with the events data mining of the day...");
