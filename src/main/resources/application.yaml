@@ -28,7 +28,7 @@ spring:
 #    username: sa
 #    password:
 #    driver-class-name: org.h2.Driver
-    #data: classpath:testdata.sql
+#    #data: classpath:testdata.sql
 
 server:
   port: 8080

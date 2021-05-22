@@ -108,8 +108,9 @@ public class SofascoreEventDataMiner implements EventDataMinerService {
         List<Event> events = getEventsByDay(date.toString());
         AtomicInteger eventsSaved = new AtomicInteger();
         events.forEach(event -> {
-            if ("Ended".equals(event.getStatus().getDescription())) {
-                com.sports.data.crud.entity.Event eventById = eventRepository.findByEventId(String.valueOf(event.getId()));
+            if (isEventValid(event)) {
+                com.sports.data.crud.entity.Event eventById =
+                        eventRepository.findByEventIdAndDate(String.valueOf(event.getId()), date.toString());
                 // Check if the event has been already stored in the DB
                 if (eventById == null) {
                     com.sports.data.crud.entity.Event eventEntity =
@@ -130,9 +131,27 @@ public class SofascoreEventDataMiner implements EventDataMinerService {
                     log.info("Event {} for date {} has been already mined", event.getSlug(), date.toString());
                 }
             } else {
-                log.info("Event {} has not ended yet", event.getSlug());
+                log.info("Event {} does not meet the validations", event.getSlug());
             }
         });
         log.info("{} events have been imported!", eventsSaved);
+    }
+
+    /**
+     * Validates the minimum requirements for an event to be valid
+     *
+     * @param event the event to validate
+     * @return true if is valid or false otherwise
+     */
+    private boolean isEventValid(Event event) {
+        return "Ended".equals(event.getStatus().getDescription()) &&
+                event.getHomeTeam() != null &&
+                !event.getHomeTeam().getSlug().isEmpty() &&
+                event.getAwayTeam() != null &&
+                !event.getAwayTeam().getSlug().isEmpty() &&
+                event.getHomeScore() != null &&
+                event.getHomeScore().getCurrent() != null &&
+                event.getAwayScore() != null &&
+                event.getAwayScore().getCurrent() != null;
     }
 }
