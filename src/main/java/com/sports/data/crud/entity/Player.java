@@ -3,11 +3,12 @@ package com.sports.data.crud.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "players")
 @Data
-public class Player {
+public class Player implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
