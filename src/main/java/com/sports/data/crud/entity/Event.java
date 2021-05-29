@@ -20,12 +20,12 @@ public class Event {
     @Column(name = "event_title")
     private String matchTitle;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "home_player", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "home_player", referencedColumnName = "player_id")
     private Player homePlayer;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "away_player", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "away_player", referencedColumnName = "player_id")
     private Player awayPlayer;
 
     @Column(name = "winner")

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface PlayerRepository extends CrudRepository<Player, Integer> {
 
     Player findPlayerById(Integer id);
+
+    Player findPlayerByPlayerId(Integer id);
 }

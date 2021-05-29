@@ -38,9 +38,30 @@ public class SofascorePlayerDataMiner extends SofascoreRequests implements Playe
 
     @Override
     public void importPlayer(Integer teamId) {
+        Player entityPlayer = playerRepository.findPlayerByPlayerId(teamId);
         TeamFullInfo teamFullInfo = getSofascoreTeamDetail(teamId);
-        Player player = playerMapper.map(teamFullInfo, Player.class);
-        playerRepository.save(player);
+        Player newPlayerInfo = playerMapper.map(teamFullInfo, Player.class);
+        playerRepository.save(entityPlayer == null ? newPlayerInfo : updatePlayerData(entityPlayer, newPlayerInfo));
+    }
+
+    /**
+     * Updates current player with new information
+     *
+     * @param oldPlayer current information of the player
+     * @param newPlayer possible new information to update
+     * @return the updated player
+     */
+    private Player updatePlayerData(Player oldPlayer, Player newPlayer) {
+        log.info(oldPlayer.getName() + " is being updated");
+        oldPlayer.setBestRanking(newPlayer.getBestRanking());
+        oldPlayer.setRanking(newPlayer.getRanking());
+        oldPlayer.setPoints(newPlayer.getPoints());
+        oldPlayer.setPreviousRanking(newPlayer.getPreviousRanking());
+        oldPlayer.setPrizeCurrent(newPlayer.getPrizeCurrent());
+        oldPlayer.setPrizeTotal(newPlayer.getPrizeTotal());
+        oldPlayer.setTournamentsPlayed(newPlayer.getTournamentsPlayed());
+        oldPlayer.setWeight(newPlayer.getWeight());
+        return oldPlayer;
     }
 
 }

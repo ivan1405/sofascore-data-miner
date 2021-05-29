@@ -2,10 +2,7 @@ package com.sports.data.crud.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "players")
@@ -13,8 +10,12 @@ import javax.persistence.Table;
 public class Player {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+
+    @Column(name = "player_id")
+    private Integer playerId;
 
     @Column(name = "name")
     private String name;

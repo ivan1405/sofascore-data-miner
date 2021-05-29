@@ -25,6 +25,7 @@ public class PlayerMapper extends SportMapper {
                 .register();
 
         mapperFactory.classMap(Team.class, Player.class)
+                .field("id", "playerId")
                 .field("sport.name", "sport")
                 .field("playerTeamInfo.residence", "residence")
                 .field("playerTeamInfo.birthplace", "birthplace")

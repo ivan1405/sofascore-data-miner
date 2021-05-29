@@ -68,7 +68,7 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     /**
      * This cronjob is used to mine the new events of each day
      */
-    @Scheduled(cron = "0 50 1 * * *")
+    @Scheduled(cron = "0 50 23 * * *")
     private void mineEventsOfTheDay() {
         log.info("Starting with the events data mining of the day...");
         StopWatch watch = new StopWatch();
@@ -100,8 +100,8 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
                     com.sports.data.crud.entity.Event eventEntity =
                             eventMapper.map(event, com.sports.data.crud.entity.Event.class);
 
-                    eventEntity.setHomePlayer(playerRepository.findPlayerById(event.getHomeTeam().getId()));
-                    eventEntity.setAwayPlayer(playerRepository.findPlayerById(event.getAwayTeam().getId()));
+                    eventEntity.setHomePlayer(playerRepository.findPlayerByPlayerId(event.getHomeTeam().getId()));
+                    eventEntity.setAwayPlayer(playerRepository.findPlayerByPlayerId(event.getAwayTeam().getId()));
 
                     eventEntity.setDate(date.toString());
                     eventRepository.save(eventEntity);
@@ -125,17 +125,13 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     private void updatePlayers(Event event) {
         // Update home players information
         if (event.getHomeTeam().getSubTeams() != null && !event.getHomeTeam().getSubTeams().isEmpty()) {
-            event.getHomeTeam().getSubTeams().forEach(team -> {
-                playerDataMinerService.importPlayer(team.getId());
-            });
+            event.getHomeTeam().getSubTeams().forEach(team -> playerDataMinerService.importPlayer(team.getId()));
         } else {
             playerDataMinerService.importPlayer(event.getHomeTeam().getId());
         }
         // Update away players information
         if (event.getAwayTeam().getSubTeams() != null && !event.getAwayTeam().getSubTeams().isEmpty()) {
-            event.getAwayTeam().getSubTeams().forEach(team -> {
-                playerDataMinerService.importPlayer(team.getId());
-            });
+            event.getAwayTeam().getSubTeams().forEach(team -> playerDataMinerService.importPlayer(team.getId()));
         } else {
             playerDataMinerService.importPlayer(event.getAwayTeam().getId());
         }
