@@ -10,6 +10,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
+
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://tfm-postgres.postgres.database.azure.com:5432/postgres

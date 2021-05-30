@@ -43,7 +43,7 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
         watch.start();
         LocalDate date = LocalDate.now();
         while (daysOffset > 0) {
-            saveEventsByDate(date);
+            saveEventsByDate(date, false);
             date = date.minusDays(1);
             daysOffset--;
         }
@@ -52,9 +52,20 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     }
 
     @Override
-    public List<Event> getEventsData(int daysOffset) {
-        log.info("Getting events data...");
-        Iterable<com.sports.data.crud.entity.Event> eventsEntity = eventRepository.findAll();
+    public List<Event> getEventsData(boolean finished) {
+        log.info("Getting events...");
+        Iterable<com.sports.data.crud.entity.Event> eventsEntity = finished ?
+                eventRepository.findAllByDescription("Ended") : eventRepository.findAllByDescriptionNot("Ended");
+        return eventMapper.mapAsList(eventsEntity, Event.class);
+    }
+
+
+    @Override
+    public List<Event> getEventsDataByDate(boolean finished, LocalDate date) {
+        log.info("Getting events...");
+        Iterable<com.sports.data.crud.entity.Event> eventsEntity = finished ?
+                eventRepository.findAllByDescriptionAndDate("Ended", date.toString()) :
+                eventRepository.findAllByDateAndDescriptionNot(date.toString(), "Ended");
         return eventMapper.mapAsList(eventsEntity, Event.class);
     }
 
@@ -73,17 +84,33 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
         log.info("Starting with the events data mining of the day...");
         StopWatch watch = new StopWatch();
         watch.start();
-        saveEventsByDate(LocalDate.now());
+        saveEventsByDate(LocalDate.now(), false);
         watch.stop();
         log.info("Scheduled events have been exported in {} seconds!", watch.getTime(TimeUnit.SECONDS));
     }
 
     /**
+     * This cronjob is used to mine the new events of the next day
+     */
+    @Scheduled(cron = "0 55 23 * * *")
+    private void mineEventsOfTheNextDay() {
+        log.info("Starting with the events data mining of the day...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+        LocalDate date = LocalDate.now();
+        saveEventsByDate(date.plusDays(1), true);
+        watch.stop();
+        log.info("Scheduled events for next day have been exported in {} seconds!", watch.getTime(TimeUnit.SECONDS));
+    }
+
+
+    /**
      * This method searches all the events by date and store them into the DB
      *
-     * @param date the date to search the events for
+     * @param date          the date to search the events for
+     * @param allowNotEnded flag if not ended events should be considered
      */
-    private void saveEventsByDate(LocalDate date) {
+    private void saveEventsByDate(LocalDate date, boolean allowNotEnded) {
         List<Event> events = getSofascoreEventsByDay(date.toString());
         AtomicInteger eventsSaved = new AtomicInteger();
 
@@ -92,7 +119,7 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
             // Update players information
             this.updatePlayers(event);
 
-            if (isEventValid(event)) {
+            if (isEventValid(event, allowNotEnded)) {
                 com.sports.data.crud.entity.Event eventById =
                         eventRepository.findByEventIdAndDate(event.getId(), date.toString());
                 // Check if the event has been already stored in the DB
@@ -143,16 +170,18 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
      * @param event the event to validate
      * @return true if is valid or false otherwise
      */
-    private boolean isEventValid(Event event) {
-        return "Ended".equals(event.getStatus().getDescription()) &&
-                event.getHomeTeam() != null &&
+    private boolean isEventValid(Event event, boolean allowNotEnded) {
+        boolean validity = event.getHomeTeam() != null &&
                 !event.getHomeTeam().getSlug().isEmpty() &&
                 event.getAwayTeam() != null &&
                 !event.getAwayTeam().getSlug().isEmpty() &&
-                event.getHomeScore() != null &&
-                event.getHomeScore().getCurrent() != null &&
-                event.getAwayScore() != null &&
-                event.getAwayScore().getCurrent() != null &&
                 !event.isDoubles();
+        return allowNotEnded ? validity :
+                validity &&
+                        "Ended".equals(event.getStatus().getDescription()) &&
+                        event.getHomeScore() != null &&
+                        event.getHomeScore().getCurrent() != null &&
+                        event.getAwayScore() != null &&
+                        event.getAwayScore().getCurrent() != null;
     }
 }

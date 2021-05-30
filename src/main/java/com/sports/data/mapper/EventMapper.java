@@ -55,16 +55,19 @@ public class EventMapper extends SportMapper {
                     @Override
                     public void mapAtoB(Event event, com.sports.data.crud.entity.Event eventEntity, MappingContext context) {
                         super.mapAtoB(event, eventEntity, context);
-                        // set the winner
-                        eventEntity.setWinner(event.getHomeScore().getCurrent() > event.getAwayScore().getCurrent() ?
-                                event.getHomeTeam().getSlug() : event.getAwayTeam().getSlug());
-                        // set the number of sets
-                        eventEntity.setTotalSets(event.getHomeScore().getCurrent() + event.getAwayScore().getCurrent());
+                        if("Ended".equals(event.getStatus().getDescription())){
+                            // set the winner
+                            eventEntity.setWinner(event.getHomeScore().getCurrent() > event.getAwayScore().getCurrent() ?
+                                    event.getHomeTeam().getSlug() : event.getAwayTeam().getSlug());
+                            // set the number of sets
+                            eventEntity.setTotalSets(event.getHomeScore().getCurrent() + event.getAwayScore().getCurrent());
+                        }
                         eventEntity.setFirstToServe("1".equals(event.getFirstToServe()) ? event.getHomeTeam().getSlug() : event.getAwayTeam().getSlug());
                     }
                 })
                 .byDefault()
                 .register();
+
 
         mapperFactory.classMap(Team.class, Player.class)
                 .field("sport.name", "sport")

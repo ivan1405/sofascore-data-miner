@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,8 +26,11 @@ public class EventsDataMinerController {
     }
 
     @RequestMapping(value = "/data-miner/events", produces = {"application/json"}, method = RequestMethod.GET)
-    public ResponseEntity<List<Event>> getEventsData(@RequestParam(required = false, defaultValue = "30") Integer daysOffset) {
-        return new ResponseEntity<>(eventDataMinerService.getEventsData(daysOffset), HttpStatus.OK);
+    public ResponseEntity<List<Event>> getEventsData(@RequestParam(required = false) String date,
+                                                     @RequestParam(required = false, defaultValue = "true") boolean finished) {
+        List<Event> events = date == null || date.isBlank() ? eventDataMinerService.getEventsData(finished) :
+                eventDataMinerService.getEventsDataByDate(finished, LocalDate.parse(date));
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/data-miner/events/{eventId}", produces = {"application/json"}, method = RequestMethod.GET)
