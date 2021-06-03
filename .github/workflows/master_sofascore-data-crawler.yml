@@ -53,3 +53,6 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_42d436386af445b9b67fdbefef8d215a }}
         package: '*.jar'
+        
+    - name: delete-run-artifacts
+      uses: christian-korneck/delete-run-artifacts-action@v1
