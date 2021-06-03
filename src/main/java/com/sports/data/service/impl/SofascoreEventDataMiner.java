@@ -113,34 +113,35 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     private void saveEventsByDate(LocalDate date, boolean allowNotEnded) {
         List<Event> events = getSofascoreEventsByDay(date.toString());
         AtomicInteger eventsSaved = new AtomicInteger();
+        if(!events.isEmpty()){
+            events.forEach(event -> {
 
-        events.forEach(event -> {
+                // Update players information
+                this.updatePlayers(event);
 
-            // Update players information
-            this.updatePlayers(event);
+                if (isEventValid(event, allowNotEnded)) {
+                    com.sports.data.crud.entity.Event eventById =
+                            eventRepository.findByEventIdAndDate(event.getId(), date.toString());
+                    // Check if the event has been already stored in the DB
+                    if (eventById == null) {
+                        com.sports.data.crud.entity.Event eventEntity =
+                                eventMapper.map(event, com.sports.data.crud.entity.Event.class);
 
-            if (isEventValid(event, allowNotEnded)) {
-                com.sports.data.crud.entity.Event eventById =
-                        eventRepository.findByEventIdAndDate(event.getId(), date.toString());
-                // Check if the event has been already stored in the DB
-                if (eventById == null) {
-                    com.sports.data.crud.entity.Event eventEntity =
-                            eventMapper.map(event, com.sports.data.crud.entity.Event.class);
+                        eventEntity.setHomePlayer(playerRepository.findPlayerByPlayerId(event.getHomeTeam().getId()));
+                        eventEntity.setAwayPlayer(playerRepository.findPlayerByPlayerId(event.getAwayTeam().getId()));
 
-                    eventEntity.setHomePlayer(playerRepository.findPlayerByPlayerId(event.getHomeTeam().getId()));
-                    eventEntity.setAwayPlayer(playerRepository.findPlayerByPlayerId(event.getAwayTeam().getId()));
-
-                    eventEntity.setDate(date.toString());
-                    eventRepository.save(eventEntity);
-                    eventsSaved.getAndIncrement();
+                        eventEntity.setDate(date.toString());
+                        eventRepository.save(eventEntity);
+                        eventsSaved.getAndIncrement();
+                    } else {
+                        log.info("Event {} for date {} has been already mined", event.getSlug(), date.toString());
+                    }
                 } else {
-                    log.info("Event {} for date {} has been already mined", event.getSlug(), date.toString());
+                    log.info("Event {} does not meet the validations", event.getSlug());
                 }
-            } else {
-                log.info("Event {} does not meet the validations", event.getSlug());
-            }
-        });
-        log.info("{} events have been imported!", eventsSaved);
+            });
+            log.info("{} events have been imported!", eventsSaved);
+        }
     }
 
     /**
