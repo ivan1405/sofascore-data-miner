@@ -79,7 +79,7 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     /**
      * This cronjob is used to mine the new events of each day
      */
-    @Scheduled(cron = "0 50 23 * * *")
+    @Scheduled(cron = "0 50 22 * * *")
     private void mineEventsOfTheDay() {
         log.info("Starting with the events data mining of the day...");
         StopWatch watch = new StopWatch();
@@ -92,7 +92,7 @@ public class SofascoreEventDataMiner extends SofascoreRequests implements EventD
     /**
      * This cronjob is used to mine the new events of the next day
      */
-    @Scheduled(cron = "0 55 23 * * *")
+    @Scheduled(cron = "0 55 22 * * *")
     private void mineEventsOfTheNextDay() {
         log.info("Starting with the events data mining of the day...");
         StopWatch watch = new StopWatch();
